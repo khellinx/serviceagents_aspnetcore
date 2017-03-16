@@ -111,7 +111,7 @@ namespace Digipolis.ServiceAgents
         {
             RegisterClientFactory(services, clientAction);
 
-            RegisterAgentType(services, assembly.GetTypes(), typeof(T));
+            RegisterAgentType(services, assembly.GetLoadableTypes(), typeof(T));
 
             services.AddScoped<ITokenHelper, TokenHelper>();
         }
@@ -120,7 +120,7 @@ namespace Digipolis.ServiceAgents
         {
             RegisterClientFactory(services, clientAction);
 
-            var assemblyTypes = assembly.GetTypes();
+            var assemblyTypes = assembly.GetLoadableTypes();
 
             foreach (var item in settings.Services)
             {
@@ -131,6 +131,18 @@ namespace Digipolis.ServiceAgents
             }
 
             services.AddScoped<ITokenHelper, TokenHelper>();
+        }
+
+        private static Type[] GetLoadableTypes(this Assembly assembly)
+        {
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                return ex.Types.Where(t => t != null).ToArray();
+            }
         }
 
         private static void RegisterClientFactory(IServiceCollection services, Action<IServiceProvider, HttpClient> clientAction)

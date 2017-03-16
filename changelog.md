@@ -1,5 +1,9 @@
 # ServiceAgents Toolbox
 
+## 4.0.4
+
+- Prevent a ReflectionTypeLoadException being thrown when retrieving all types from the given assembly.
+
 ## 4.0.3
 
 - Fixed Error object changes
